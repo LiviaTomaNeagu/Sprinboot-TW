@@ -10,8 +10,7 @@
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
 <div class="w-full max-w-5xl bg-white rounded-lg shadow p-8">
     <h1 class="text-2xl font-bold text-gray-800 mb-6">Delete Images</h1>
-    <form th:action="@{/resources/album/delete-image}" method="POST" class="space-y-4">
-        <input type="hidden" name="albumId" th:value="${album.id}">
+    <form th:action="@{/resources/album/{albumId}(albumId=${album.id})}" method="POST" class="space-y-4">
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div th:each="image : ${images}" class="bg-gray-100 rounded-lg shadow p-4">

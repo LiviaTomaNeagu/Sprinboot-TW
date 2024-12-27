@@ -22,7 +22,7 @@ public class AlbumEntity {
 
     private String description;
 
-    @OneToMany(mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "album", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<ImageEntity> images = new ArrayList<>();
 
 }

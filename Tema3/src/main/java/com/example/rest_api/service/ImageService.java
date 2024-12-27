@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -14,10 +15,12 @@ public class ImageService {
 
     private final ImageRepository imageRepository;
     private final AlbumService albumService;
+    private final FileStorageService fileStorageService;
 
-    public ImageService(ImageRepository imageRepository, AlbumService albumService) {
+    public ImageService(ImageRepository imageRepository, AlbumService albumService, FileStorageService fileStorageService) {
         this.imageRepository = imageRepository;
         this.albumService = albumService;
+        this.fileStorageService = fileStorageService;
     }
 
     /**
@@ -30,21 +33,21 @@ public class ImageService {
     /**
      * Save an image to the album.
      */
-    public ImageEntity saveImage(Long albumId, MultipartFile imageFile) {
-        AlbumEntity album = albumService.getAlbumById(albumId);
-
-        // Save the image
-        ImageEntity imageEntity = new ImageEntity();
-        imageEntity.setAlbum(album);
-        imageEntity.setName(imageFile.getOriginalFilename());
-
+    public void saveImage(Long albumId, MultipartFile imageFile) {
         try {
-            imageEntity.setContent(imageFile.getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to store image file", e);
-        }
+            // Save the file to local storage
+            String filePath = fileStorageService.saveFile(imageFile);
 
-        return imageRepository.save(imageEntity);
+            // Save metadata to the database
+            ImageEntity image = new ImageEntity();
+            image.setAlbum(albumService.getAlbumById(albumId));
+            image.setName(imageFile.getOriginalFilename());
+            image.setFilePath(imageFile.getOriginalFilename()); // Save file path in DB
+            image.setCreatedAt(LocalDateTime.now());
+            imageRepository.save(image);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save image file", e);
+        }
     }
 
     /**
