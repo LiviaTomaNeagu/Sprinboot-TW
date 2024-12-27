@@ -1,4 +1,4 @@
-package com.example.rest_api.database.model;
+package com.example.rest_api.database.primary.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -7,7 +7,6 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @Data
 @Entity

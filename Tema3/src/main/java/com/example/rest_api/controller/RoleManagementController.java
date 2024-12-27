@@ -1,7 +1,7 @@
 package com.example.rest_api.controller;
 
-import com.example.rest_api.database.model.PermissionsEntity;
-import com.example.rest_api.database.model.RoleEntity;
+import com.example.rest_api.database.primary.model.PermissionsEntity;
+import com.example.rest_api.database.primary.model.RoleEntity;
 import com.example.rest_api.service.PermissionService;
 import com.example.rest_api.service.RoleService;
 import org.springframework.stereotype.Controller;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Controller

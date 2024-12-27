@@ -1,6 +1,6 @@
 package com.example.rest_api.service;
-import com.example.rest_api.database.model.PermissionsEntity;
-import com.example.rest_api.database.repository.PermissionRepository;
+import com.example.rest_api.database.primary.model.PermissionsEntity;
+import com.example.rest_api.database.primary.repository.PermissionRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

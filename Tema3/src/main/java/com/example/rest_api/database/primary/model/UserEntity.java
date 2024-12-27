@@ -1,17 +1,14 @@
-package com.example.rest_api.database.model;
+package com.example.rest_api.database.primary.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Entity
@@ -34,7 +31,7 @@ public class UserEntity implements UserDetails {
     @Column(name = "email", unique = true, columnDefinition = "VARCHAR(255) CHECK (email ~* '^[A-Za-z0-9._+%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')")
     private String email;
 
-    @Column(name="isOAuthAccount")
+    @Column(name="isoauth_account")
     private Boolean isOAuthAccount;
 
     @Basic
