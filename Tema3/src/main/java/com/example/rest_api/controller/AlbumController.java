@@ -70,7 +70,13 @@ public class AlbumController {
 
     // Handle Delete Image form submission
     @PostMapping("/delete-image/{albumId}")
-    public String deleteImages(@RequestParam Long albumId, @RequestParam List<Long> imageIds) {
+    public String deleteImages(
+            @PathVariable Long albumId, // Get albumId from the path
+            @RequestParam List<Long> imageIds // Get imageIds from the form
+    ) {
+        System.out.println("Album ID: " + albumId);
+        System.out.println("Image IDs: " + imageIds);
+
         imageService.deleteImages(imageIds);
         return "redirect:/resources/album/" + albumId; // Redirect to the album view page
     }

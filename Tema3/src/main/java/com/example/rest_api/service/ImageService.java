@@ -5,11 +5,13 @@ import com.example.rest_api.database.secondary.model.ImageEntity;
 import com.example.rest_api.database.secondary.repository.ImageRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Transactional
 @Service
 public class ImageService {
 
@@ -54,6 +56,6 @@ public class ImageService {
      * Delete selected images by their IDs.
      */
     public void deleteImages(List<Long> imageIds) {
-        imageRepository.deleteAllById(imageIds);
+        imageRepository.deleteImagesByIds(imageIds);
     }
 }
