@@ -55,7 +55,15 @@ public class ImageService {
     /**
      * Delete selected images by their IDs.
      */
+    @Transactional
     public void deleteImages(List<Long> imageIds) {
-        imageRepository.deleteImagesByIds(imageIds);
+        if (imageIds == null || imageIds.isEmpty()) {
+            throw new IllegalArgumentException("Image IDs list cannot be null or empty");
+        }
+
+        for (Long id : imageIds) {
+            imageRepository.deleteById(id);
+        }
     }
+
 }
