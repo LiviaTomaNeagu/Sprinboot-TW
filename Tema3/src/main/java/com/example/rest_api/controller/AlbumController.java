@@ -47,6 +47,19 @@ public class AlbumController {
         return "add-image"; // Thymeleaf template: add-image.html
     }
 
+    @GetMapping("/delete-image/{albumId}")
+    public String showDeleteImagePage(@PathVariable Long albumId, Model model) {
+        AlbumEntity album = albumService.getAlbumById(albumId);
+        // Fetch all images for the given album ID
+        List<ImageEntity> images = imageService.getImagesByAlbumId(albumId);
+
+        // Add data to the model for rendering
+        model.addAttribute("album", album);
+        model.addAttribute("images", images);
+
+        return "delete-image"; // Thymeleaf template: add-image.html
+    }
+
     // Handle Add Image form submission
     @PostMapping("/{albumId}")
     public String addImage(@PathVariable Long albumId,
@@ -56,7 +69,7 @@ public class AlbumController {
     }
 
     // Handle Delete Image form submission
-    @PostMapping("/delete-image")
+    @PostMapping("/delete-image/{albumId}")
     public String deleteImages(@RequestParam Long albumId, @RequestParam List<Long> imageIds) {
         imageService.deleteImages(imageIds);
         return "redirect:/resources/album/" + albumId; // Redirect to the album view page

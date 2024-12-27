@@ -15,8 +15,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div th:each="image : ${images}" class="bg-gray-100 rounded-lg shadow p-4">
                 <input type="checkbox" name="imageIds" th:value="${image.id}" class="mb-4">
-                <img th:src="@{${image.url}}" alt="Album Image" class="w-full h-48 object-cover rounded mb-4">
-                <p class="text-sm text-gray-600" th:text="${image.description}">Image description</p>
+                <img th:src="@{/{filePath}(filePath=${image.filePath})}" alt="Album Image" class="w-full h-48 object-cover rounded mb-4">
             </div>
         </div>
 
