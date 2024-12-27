@@ -4,10 +4,7 @@ import com.example.rest_api.database.secondary.model.AlbumEntity;
 import com.example.rest_api.service.AlbumService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,7 +32,11 @@ public class ResourcesController {
     }
 
     @PostMapping("/add-album")
-    public String addAlbum(@ModelAttribute AlbumEntity album) {
+    public String addAlbum(@RequestParam("name") String name,
+                           @RequestParam("description") String description) {
+        AlbumEntity album = new AlbumEntity();
+        album.setName(name);
+        album.setDescription(description);
         albumService.saveAlbum(album);
         return "redirect:/resources";
     }
