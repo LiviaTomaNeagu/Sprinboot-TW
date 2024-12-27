@@ -5,7 +5,6 @@ import com.example.rest_api.security.AuthenticatedUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +33,21 @@ public class HomeController {
             model.addAttribute("username", principal.getName());
         }
         return "home";
+    }
+
+    @GetMapping("/resources")
+    public String resources() {
+        return "user-management"; // Renders a resources page
+    }
+
+    @GetMapping("/user-management")
+    public String userManagement() {
+        return "user-management"; // Renders a user management page
+    }
+
+    @GetMapping("/role-management")
+    public String roleManagement() {
+        return "role-management"; // Renders a role management page
     }
 
 }

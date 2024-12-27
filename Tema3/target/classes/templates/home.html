@@ -1,24 +1,41 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Lab Model</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 </head>
-<body>
-<h1>Welcome, <span th:text="${username}">User</span>!</h1>
-<h2>Home - SUCCESS</h2>
-<table>
-    <thead>
-    <tr>
-        <th>User Info</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td th:text="${username}">Authenticated User</td>
-    </tr>
-    </tbody>
-</table>
-<a href="/logout">Logout</a>
+<body class="bg-gradient-to-r from-indigo-500 via-indigo-600 to-indigo-700 min-h-screen flex flex-col items-center justify-center">
+<div class="w-full max-w-7xl mx-auto px-4 py-8">
+    <!-- Header Section -->
+    <header class="flex flex-col items-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-200 mb-2">Lab. Model</h1>
+        <p class="text-lg text-gray-300 text-center">Welcome to the management system. Choose a section to get started.</p>
+    </header>
+
+    <!-- Main Content Section -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Resources Section -->
+        <a th:href="@{/resources}" class="group block bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 group-hover:text-indigo-700 transition-colors">Resources</h2>
+            <p class="text-gray-600">Manage all your organization's resources in one place.</p>
+        </a>
+
+        <!-- User Management Section -->
+        <a th:href="@{/user-management}" class="group block bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 group-hover:text-indigo-700 transition-colors">User Management</h2>
+            <p class="text-gray-600">View and manage users in your system.</p>
+        </a>
+
+        <!-- Role Management Section -->
+        <a th:href="@{/role-management}" class="group block bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 group-hover:text-indigo-700 transition-colors">Role Management</h2>
+            <p class="text-gray-600">Define and assign roles to users dynamically.</p>
+        </a>
+    </div>
+</div>
 </body>
 </html>

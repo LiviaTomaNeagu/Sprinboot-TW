@@ -1,5 +1,6 @@
 package com.example.rest_api.service;
 
+import com.example.rest_api.database.model.RoleEntity;
 import com.example.rest_api.database.model.UserEntity;
 import com.example.rest_api.database.repository.RoleRepository;
 import com.example.rest_api.database.repository.UserRepository;
@@ -73,29 +74,41 @@ public class UserService extends OidcUserService implements UserDetailsService {
      */
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
-        // Delegates to the default OidcUserService for the basic OidcUser
         OidcUser oidcUser = super.loadUser(userRequest);
 
         String email = oidcUser.getEmail();
         String name = oidcUser.getFullName();
 
-        // Check if user exists in DB, if not, create it
         Optional<UserEntity> optUser = userRepository.findByEmail(email);
         if (optUser.isEmpty()) {
+            Optional<RoleEntity> userRole = roleRepository.findByName("USER");
+            if (userRole.isEmpty()) {
+                throw new RuntimeException("Role 'USER' not found in the database!");
+            }
+
             UserEntity newUser = new UserEntity();
             newUser.setEmail(email);
             newUser.setUsername(name);
             newUser.setPassword(PasswordGeneratorUtil.generate());
             newUser.setIsOAuthAccount(true);
-            newUser.setRoles(roleRepository.findAllByName("USER"));
-            logger.info("CURRENT OAUTH USER SAVED WITH PASSWORD: ", newUser.getPassword());
+
+            // Initialize roles collection and add the user role
+            List<RoleEntity> roles = new ArrayList<>();
+            roles.add(userRole.get());
+            newUser.setRoles(roles);
+
+            logger.info("CURRENT OAUTH USER SAVED WITH PASSWORD: {}", newUser.getPassword());
             this.save(newUser);
         }
 
-        // Return AuthenticatedUser to unify principal type
-        AuthenticatedUser authenticatedUser = new AuthenticatedUser(oidcUser.getAuthorities(), oidcUser.getAttributes(), email);
+        AuthenticatedUser authenticatedUser = new AuthenticatedUser(
+                oidcUser.getAuthorities(),
+                oidcUser.getAttributes(),
+                email
+        );
         return authenticatedUser;
     }
+
 
     /* Queries */
     public UserEntity save(UserEntity user) {
@@ -106,5 +119,14 @@ public class UserService extends OidcUserService implements UserDetailsService {
 
     public Boolean existsByEmail(String email){
         return this.userRepository.existsByEmail(email);
+    }
+
+    public List<UserEntity> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public UserEntity getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found!"));
     }
 }

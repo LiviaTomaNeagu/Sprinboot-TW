@@ -28,7 +28,7 @@ public class SecurityConfig {
         DefaultSecurityFilterChain build = http
 
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/login/**", "/register", "/oauth2/**").permitAll()
+                        .requestMatchers("/", "/login/**", "/register", "/oauth2/**", "/resources", "/user-management", "/role-management").permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")

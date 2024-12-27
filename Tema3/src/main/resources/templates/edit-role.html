@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Role</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center py-8">
+<div class="w-full max-w-lg bg-white rounded-lg shadow p-8">
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">Edit Role</h1>
+    <form th:action="@{/role-management/edit}" method="POST">
+        <input type="hidden" name="id" th:value="${role.id}"/>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">Role Name:</label>
+            <input type="text" name="name" th:value="${role.name}"
+                   class="w-full border rounded py-2 px-3 focus:outline-none focus:border-indigo-500" />
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">Permissions:</label>
+            <div th:each="permission : ${allPermissions}" class="flex items-center space-x-2">
+                <input type="checkbox" th:id="${permission.id}" th:name="permissions"
+                       th:value="${permission.id}" th:checked="${role.permissions.contains(permission)}" />
+                <label th:for="${permission.id}" th:text="${permission.method + ' ' + permission.endpoint}"></label>
+            </div>
+        </div>
+
+        <button type="submit"
+                class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600">
+            Save Changes
+        </button>
+    </form>
+</div>
+</body>
+</html>

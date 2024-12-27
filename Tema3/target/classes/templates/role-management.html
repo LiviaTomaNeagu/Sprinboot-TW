@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+  <meta charset="UTF-8">
+  <title>Role Management</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center py-8">
+<div class="w-full max-w-7xl bg-white rounded-lg shadow p-8">
+  <h1 class="text-2xl font-bold text-gray-800 mb-6">Role Management</h1>
+  <table class="w-full text-left border-collapse">
+    <thead>
+    <tr>
+      <th class="px-4 py-2 bg-indigo-600 text-white">Role</th>
+      <th class="px-4 py-2 bg-indigo-600 text-white">Permissions</th>
+      <th class="px-4 py-2 bg-indigo-600 text-white">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="role : ${roles}">
+      <td class="px-4 py-2 border-b border-gray-300" th:text="${role.name}">ADMIN</td>
+      <td class="px-4 py-2 border-b border-gray-300">
+        <ul>
+          <li th:each="permission : ${role.permissions}" th:text="${permission.method + ' ' + permission.endpoint}">
+            POST /**
+          </li>
+        </ul>
+      </td>
+      <td class="px-4 py-2 border-b border-gray-300">
+        <button th:onclick="'window.location.href=\'/role-management/edit/' + ${role.id} + '\';'"
+                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+          Edit
+        </button>
+        <button th:onclick="'window.location.href=\'/role-management/delete/' + ${role.id} + '\';'"
+                class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+          Delete
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>
