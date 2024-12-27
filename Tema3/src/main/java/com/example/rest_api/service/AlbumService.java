@@ -65,5 +65,15 @@ public class AlbumService {
         permission.setEndpoint(endpoint);
         return permission;
     }
+
+    public AlbumEntity getAlbumById(Long albumId) {
+        return albumRepository.findById(albumId)
+                .orElseThrow(() -> new IllegalArgumentException("Album not found with ID: " + albumId));
+    }
+
+    public boolean hasPermission(Long albumId, String permission) {
+        // Implement permission logic (optional, depending on your security setup)
+        return true; // Placeholder
+    }
 }
 
