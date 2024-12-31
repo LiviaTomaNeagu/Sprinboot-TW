@@ -50,18 +50,19 @@ public class UserService extends OidcUserService implements UserDetailsService {
         UserEntity entity = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
 
-        // Convert roles to authorities...
+        // Convert roles to authorities
         Collection<? extends GrantedAuthority> authorities = entity.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .map(role -> new SimpleGrantedAuthority(role.getName())) // Role name should match "ROLE_*"
                 .toList();
 
-        // Return AuthenticatedUser
-        //AuthenticatedUser authenticatedUser = new AuthenticatedUser(authorities, Map.of(), entity.getEmail());
-        //authenticatedUser.setPassword(entity.getPassword());
-        /* Constructor based on UserDetails */
-        List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
-        return new AuthenticatedUser(entity.getUsername(), entity.getPassword(), simpleGrantedAuthorities);
+    // Return an instance of AuthenticatedUser or org.springframework.security.core.userdetails.User
+    return new AuthenticatedUser(
+        entity.getEmail(), // Principal is email
+        entity.getPassword(), // User's hashed password
+        authorities, // List of GrantedAuthority
+        entity.getId());
     }
+
 
     /**
      * Used for oAuth Auth.
@@ -101,7 +102,8 @@ public class UserService extends OidcUserService implements UserDetailsService {
         AuthenticatedUser authenticatedUser = new AuthenticatedUser(
                 oidcUser.getAuthorities(),
                 oidcUser.getAttributes(),
-                email
+                email,
+                optUser.get().getId()
         );
         return authenticatedUser;
     }

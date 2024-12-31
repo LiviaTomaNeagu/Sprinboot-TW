@@ -42,4 +42,12 @@ public class RoleService {
         return roleRepository.findByName(name);
     }
 
+    public boolean hasPermissionForRole(String roleName, String permission, String albumEndpoint) {
+        return roleRepository.hasPermissionForRole(roleName, permission, albumEndpoint);
+    }
+
+    public List<RoleEntity> getRolesByUserId(Long userId) {
+        return roleRepository.findRolesByUserId(userId);
+    }
+
 }

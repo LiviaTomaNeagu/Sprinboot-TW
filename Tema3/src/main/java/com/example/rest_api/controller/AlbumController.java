@@ -2,8 +2,11 @@ package com.example.rest_api.controller;
 
 import com.example.rest_api.database.secondary.model.AlbumEntity;
 import com.example.rest_api.database.secondary.model.ImageEntity;
+import com.example.rest_api.security.AuthenticatedUser;
 import com.example.rest_api.service.AlbumService;
 import com.example.rest_api.service.ImageService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,11 +29,13 @@ public class AlbumController {
     // View album page with images
     @GetMapping("/{albumId}")
     public String viewAlbum(@PathVariable Long albumId, Model model) {
+        AuthenticatedUser authenticatedUser = getAuthenticatedUser();
+
         AlbumEntity album = albumService.getAlbumById(albumId);
         List<ImageEntity> images = imageService.getImagesByAlbumId(albumId);
 
-        boolean canPostOrPut = albumService.hasPermission(albumId, "POST") || albumService.hasPermission(albumId, "PUT");
-        boolean canDelete = albumService.hasPermission(albumId, "DELETE");
+        boolean canPostOrPut = albumService.hasPermission(albumId, "POST", authenticatedUser.getId()) || albumService.hasPermission(albumId, "PUT", authenticatedUser.getId());
+        boolean canDelete = albumService.hasPermission(albumId, "DELETE", authenticatedUser.getId());
 
         model.addAttribute("album", album);
         model.addAttribute("images", images);
@@ -79,5 +84,14 @@ public class AlbumController {
 
         imageService.deleteImages(imageIds);
         return "redirect:/resources/album/" + albumId; // Redirect to the album view page
+    }
+
+
+    public AuthenticatedUser getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof AuthenticatedUser) {
+            return (AuthenticatedUser) authentication.getPrincipal();
+        }
+        throw new IllegalStateException("No authenticated user found");
     }
 }

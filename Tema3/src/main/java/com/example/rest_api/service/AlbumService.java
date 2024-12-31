@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import com.example.rest_api.database.primary.model.RoleEntity;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.management.relation.Role;
 
 @Service
 public class AlbumService {
@@ -71,9 +74,23 @@ public class AlbumService {
                 .orElseThrow(() -> new IllegalArgumentException("Album not found with ID: " + albumId));
     }
 
-    public boolean hasPermission(Long albumId, String permission) {
-        // Implement permission logic (optional, depending on your security setup)
-        return true; // Placeholder
+    @Transactional(readOnly = true)
+    public boolean hasPermission(Long albumId, String permission, Long userId) {
+        String albumName = albumRepository.findById(albumId).get().getName().toUpperCase();
+
+        String albumEndpoint = "/album/" + albumName + "/**";
+
+        List<RoleEntity> rolesId = roleService.getRolesByUserId(userId);
+
+        for(RoleEntity role : rolesId) {
+            boolean hasPermission = roleService.hasPermissionForRole(role.getName(), permission, albumEndpoint);
+            if(hasPermission) {
+                return true;
+            }
+        }
+
+        return false;
     }
+
 }
 

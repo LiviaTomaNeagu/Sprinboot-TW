@@ -13,6 +13,7 @@ import java.util.Map;
 
 @Getter @Setter
 public class AuthenticatedUser extends User implements OidcUser, Serializable {
+    private Long id;
     private String email;
     private String name;
     private String password;
@@ -22,15 +23,17 @@ public class AuthenticatedUser extends User implements OidcUser, Serializable {
     private OidcIdToken idToken;
     private Map<String, Object> attributes;
 
-    public AuthenticatedUser(Collection<? extends GrantedAuthority> authorities, Map<String, Object> attributes, String email) {
+    public AuthenticatedUser(Collection<? extends GrantedAuthority> authorities, Map<String, Object> attributes, String email, Long id) {
         super(email, "", authorities); // Use email as the username here
+        this.id = id;
         this.email = email;
         this.attributes = attributes;
         this.isOAuth2 = true; // Distinguish OAuth2 users
     }
 
-    public AuthenticatedUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+    public AuthenticatedUser(String username, String password, Collection<? extends GrantedAuthority> authorities, Long id) {
         super(username, password, true, true, true, true, authorities);
+        this.id = id;
         this.password = password;
         this.name = username;
     }
@@ -44,4 +47,5 @@ public class AuthenticatedUser extends User implements OidcUser, Serializable {
     public <A> A getAttribute(String name) {
         return (A) attributes.get(name);
     }
+
 }
