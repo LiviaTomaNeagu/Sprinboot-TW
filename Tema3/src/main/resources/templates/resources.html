@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <title>Resources</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col py-8">
+<div class="relative w-full max-w-7xl mx-auto bg-white rounded-lg shadow p-8">
+    <!-- Back Button -->
+    <a th:href="@{/home}"
+       class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600 inline-block mb-6">
+        Back
+    </a>
+
+    <!-- Title and Add Button -->
+    <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-gray-800">Resources</h1>
+        <button th:onclick="'window.location.href=\'/resources/add-album\';'"
+                class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+            + Add
+        </button>
+    </div>
+
+    <!-- Albums Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+        <div th:each="album : ${albums}" class="bg-gray-100 rounded-lg shadow p-4">
+            <h2 class="text-lg font-bold text-gray-800 mb-2" th:text="${album.name}">Album Name</h2>
+            <p class="text-sm text-gray-600 mb-4" th:text="${album.description}">Album description goes here.</p>
+            <a th:href="@{/resources/album/{albumId}(albumId=${album.id})}"
+               class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600">
+                View Album
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

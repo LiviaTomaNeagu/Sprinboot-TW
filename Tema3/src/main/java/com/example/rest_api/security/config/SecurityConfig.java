@@ -36,8 +36,10 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/home"))
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .usernameParameter("email")
-                        .defaultSuccessUrl("/home")
+                        .usernameParameter("email") // Matches the "name" attribute in the email input field
+                        .passwordParameter("password") // Matches the "name" attribute in the password input field
+                        .defaultSuccessUrl("/home", true) // Redirects to /home after login
+                        .failureUrl("/login?error=true") // Redirects back to login with error query param on failure
                         .permitAll())
                 .logout(logout -> logout
                         .logoutUrl("/logout")

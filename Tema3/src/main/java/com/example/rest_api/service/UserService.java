@@ -1,35 +1,32 @@
 package com.example.rest_api.service;
 
-import com.example.rest_api.database.model.RoleEntity;
-import com.example.rest_api.database.model.UserEntity;
-import com.example.rest_api.database.repository.RoleRepository;
-import com.example.rest_api.database.repository.UserRepository;
+import com.example.rest_api.database.primary.model.RoleEntity;
+import com.example.rest_api.database.primary.model.UserEntity;
+import com.example.rest_api.database.primary.repository.RoleRepository;
+import com.example.rest_api.database.primary.repository.UserRepository;
 import com.example.rest_api.security.AuthenticatedUser;
 import com.example.rest_api.security.PasswordGeneratorUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 @Service
+
+@Transactional("primaryTransactionManager")
 public class UserService extends OidcUserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -53,18 +50,19 @@ public class UserService extends OidcUserService implements UserDetailsService {
         UserEntity entity = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
 
-        // Convert roles to authorities...
+        // Convert roles to authorities
         Collection<? extends GrantedAuthority> authorities = entity.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .map(role -> new SimpleGrantedAuthority(role.getName())) // Role name should match "ROLE_*"
                 .toList();
 
-        // Return AuthenticatedUser
-        //AuthenticatedUser authenticatedUser = new AuthenticatedUser(authorities, Map.of(), entity.getEmail());
-        //authenticatedUser.setPassword(entity.getPassword());
-        /* Constructor based on UserDetails */
-        List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
-        return new AuthenticatedUser(entity.getUsername(), entity.getPassword(), simpleGrantedAuthorities);
+    // Return an instance of AuthenticatedUser or org.springframework.security.core.userdetails.User
+    return new AuthenticatedUser(
+        entity.getEmail(), // Principal is email
+        entity.getPassword(), // User's hashed password
+        authorities, // List of GrantedAuthority
+        entity.getId());
     }
+
 
     /**
      * Used for oAuth Auth.
@@ -104,7 +102,8 @@ public class UserService extends OidcUserService implements UserDetailsService {
         AuthenticatedUser authenticatedUser = new AuthenticatedUser(
                 oidcUser.getAuthorities(),
                 oidcUser.getAttributes(),
-                email
+                email,
+                optUser.get().getId()
         );
         return authenticatedUser;
     }

@@ -53,6 +53,10 @@
         <p class="text-sm text-gray-600 mt-4 text-center">
             Don't have an account? <a th:href="@{/register}" class="text-indigo-500">Register</a>
         </p>
+        <p th:if="${param.error}" class="text-red-500 text-sm mt-2">
+            Invalid email or password. Please try again.
+        </p>
+
     </div>
 </div>
 </body>

@@ -1,7 +1,7 @@
 package com.example.rest_api.service;
 
-import com.example.rest_api.database.model.RoleEntity;
-import com.example.rest_api.database.repository.RoleRepository;
+import com.example.rest_api.database.primary.model.RoleEntity;
+import com.example.rest_api.database.primary.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +40,14 @@ public class RoleService {
 
     public Optional<RoleEntity> getByName(String name) {
         return roleRepository.findByName(name);
+    }
+
+    public boolean hasPermissionForRole(String roleName, String permission, String albumEndpoint) {
+        return roleRepository.hasPermissionForRole(roleName, permission, albumEndpoint);
+    }
+
+    public List<RoleEntity> getRolesByUserId(Long userId) {
+        return roleRepository.findRolesByUserId(userId);
     }
 
 }
