@@ -50,4 +50,11 @@ public class RoleService {
         return roleRepository.findRolesByUserId(userId);
     }
 
+    public boolean canEditOrDelete(Long userId) {
+        List<RoleEntity> roles = roleRepository.findRolesByUserId(userId);
+
+        return roles.stream()
+                .anyMatch(role -> role.getName().equals("ADMIN"));
+    }
+
 }

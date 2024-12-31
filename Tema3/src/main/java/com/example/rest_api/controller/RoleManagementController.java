@@ -2,8 +2,11 @@ package com.example.rest_api.controller;
 
 import com.example.rest_api.database.primary.model.PermissionsEntity;
 import com.example.rest_api.database.primary.model.RoleEntity;
+import com.example.rest_api.security.AuthenticatedUser;
 import com.example.rest_api.service.PermissionService;
 import com.example.rest_api.service.RoleService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,9 +30,14 @@ public class RoleManagementController {
 
     @GetMapping("/role-management")
     public String roleManagementPage(Model model) {
+
+        AuthenticatedUser authenticatedUser = getAuthenticatedUser();
+        boolean canEditOrDelete = roleService.canEditOrDelete(authenticatedUser.getId());
+
         // Fetch all roles
         List<RoleEntity> roles = roleService.getAllRoles();
         model.addAttribute("roles", roles);
+        model.addAttribute("canEditOrDelete", canEditOrDelete);
         return "role-management"; // Renders role-management.html
     }
 
@@ -67,8 +75,11 @@ public class RoleManagementController {
         return "redirect:/role-management";
     }
 
-
-
-
-
+    public AuthenticatedUser getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof AuthenticatedUser) {
+            return (AuthenticatedUser) authentication.getPrincipal();
+        }
+        throw new IllegalStateException("No authenticated user found");
+    }
 }

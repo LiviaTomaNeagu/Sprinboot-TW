@@ -2,8 +2,11 @@ package com.example.rest_api.controller;
 
 import com.example.rest_api.database.primary.model.UserEntity;
 import com.example.rest_api.database.primary.model.RoleEntity;
+import com.example.rest_api.security.AuthenticatedUser;
 import com.example.rest_api.service.UserService;
 import com.example.rest_api.service.RoleService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,9 +29,14 @@ public class UserManagementController {
 
     @GetMapping("/user-management")
     public String userManagementPage(Model model) {
+
+        AuthenticatedUser authenticatedUser = getAuthenticatedUser();
+        boolean canUpdate = userService.canUpdate(authenticatedUser.getId());
+
         // Fetch all users
         List<UserEntity> users = userService.getAllUsers();
         model.addAttribute("users", users);
+        model.addAttribute("canUpdate", canUpdate);
         return "user-management"; // Renders user-management.html
     }
 
@@ -63,4 +71,12 @@ public class UserManagementController {
         return "redirect:/user-management";
     }
 
+
+    public AuthenticatedUser getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof AuthenticatedUser) {
+            return (AuthenticatedUser) authentication.getPrincipal();
+        }
+        throw new IllegalStateException("No authenticated user found");
+    }
 }

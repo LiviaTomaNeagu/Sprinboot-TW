@@ -33,11 +33,19 @@
                 </ul>
             </td>
             <td class="px-4 py-2 border-b border-gray-300">
-                <a th:href="@{/user-management/update-roles/{id}(id=${user.id})}"
-                   class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600">
-                    Update Roles
-                </a>
+                <!-- Conditional Rendering for Update Roles -->
+                <div th:if="${canUpdate}">
+                    <a th:href="@{/user-management/update-roles/{id}(id=${user.id})}"
+                       class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600">
+                        Update Roles
+                    </a>
+                </div>
+                <!-- Message when no actions are allowed -->
+                <p th:unless="${canUpdate}" class="text-gray-500 italic">
+                    No actions allowed
+                </p>
             </td>
+
         </tr>
         </tbody>
     </table>

@@ -35,15 +35,23 @@
         </ul>
       </td>
       <td class="px-4 py-2 border-b border-gray-300">
-        <button th:onclick="'window.location.href=\'/role-management/edit/' + ${role.id} + '\';'"
-                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-          Edit
-        </button>
-        <button th:onclick="'window.location.href=\'/role-management/delete/' + ${role.id} + '\';'"
-                class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
-          Delete
-        </button>
+        <!-- Conditional Rendering for Buttons -->
+        <div th:if="${canEditOrDelete}">
+          <button th:onclick="'window.location.href=\'/role-management/edit/' + ${role.id} + '\';'"
+                  class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            Edit
+          </button>
+          <button th:onclick="'window.location.href=\'/role-management/delete/' + ${role.id} + '\';'"
+                  class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+            Delete
+          </button>
+        </div>
+        <!-- Message when no actions are allowed -->
+        <p th:unless="${canEditOrDelete}" class="text-gray-500 italic">
+          No actions allowed
+        </p>
       </td>
+
     </tr>
     </tbody>
   </table>

@@ -128,4 +128,11 @@ public class UserService extends OidcUserService implements UserDetailsService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found!"));
     }
+
+    public boolean canUpdate(Long userId) {
+        List<RoleEntity> roles = roleRepository.findRolesByUserId(userId);
+
+        return roles.stream()
+                .anyMatch(role -> role.getName().equals("ADMIN"));
+    }
 }
